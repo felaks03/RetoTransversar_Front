@@ -29,14 +29,37 @@ La idea no es documentar un backend ideal, sino dejar claro:
 
 ### 3.1. Frontend actual
 
-El frontend actual esta creado con:
+El repositorio contiene ahora mismo una base provisional creada con:
 
 - React 19
 - Vite 8
 - estructura minima de `src/`
 - plantilla base de Vite en `App.jsx`
 
-Todavia no implementa la SPA del reto.
+Ese estado **no es la implementacion objetivo**. Para este proyecto, la decision ya tomada es migrar el frontend a **Angular**, alineado con el PDF del reto.
+
+Por tanto, para implementar correctamente el front hay que asumir:
+
+- el scaffold actual de React/Vite se sustituira,
+- el frontend final se montara con Angular,
+- y la documentacion funcional de este archivo debe leerse ya pensando en Angular como tecnologia de implementacion.
+
+### 3.1.1. Base Angular recomendada
+
+Para que la implementacion quede coherente con el reto y con el backend actual, la base Angular recomendada es:
+
+- Angular CLI
+- TypeScript
+- Angular Router
+- HttpClient
+- Reactive Forms
+- componentes standalone o una estructura modular equivalente
+
+Ademas, conviene dejar preparada la app para una futura evolucion hacia:
+
+- guards reales por rol,
+- interceptores HTTP,
+- autenticacion basada en token cuando el backend la incorpore.
 
 ### 3.2. Backend real disponible
 
@@ -323,13 +346,20 @@ Para crear o actualizar recursos, el frontend debe enviar una estructura compati
 }
 ```
 
-### 6.4. Implicacion tecnica para React
+### 6.4. Implicacion tecnica para Angular
 
 Conviene separar en el front:
 
 - modelos de respuesta de la API,
 - modelos de formulario,
 - adaptadores para transformar formularios en payloads de escritura.
+
+En Angular eso encaja bien separando:
+
+- `interfaces` o `models` para DTOs,
+- formularios reactivos para la capa de UI,
+- `services` para acceso HTTP,
+- `mappers` o utilidades para transformar entre lectura y escritura.
 
 ## 7. Endpoints reales del backend utiles para el frontend
 
@@ -649,18 +679,24 @@ El backend no ofrece un endpoint directo de "plazas libres". Para aproximarlo de
 3. sumar `cantidad`,
 4. calcular `aforoMaximo - totalReservado`.
 
-## 12. Estrategia de consumo API recomendada para React
+## 12. Estrategia de consumo API recomendada para Angular
 
 ### 12.1. Capa de servicios
 
 Conviene separar llamadas por dominio:
 
-- `eventosApi`
-- `reservasApi`
-- `tiposApi`
-- `usuariosApi`
-- `perfilesApi`
-- `usuarioPerfilesApi`
+- `EventosService`
+- `ReservasService`
+- `TiposService`
+- `UsuariosService`
+- `PerfilesService`
+- `UsuarioPerfilesService`
+
+Y centralizar:
+
+- la `baseUrl` del backend,
+- el manejo comun de errores,
+- y futuros interceptores si mas adelante se implementa autenticacion.
 
 ### 12.2. Adaptadores de datos
 
@@ -730,15 +766,23 @@ Sigue siendo obligatorio y compatible con el backend actual.
 
 Componentes razonables:
 
-- `EventCard`
-- `EventList`
-- `EventFilters`
-- `EventDetail`
-- `ReservationForm`
-- `AdminEventTable`
-- `TipoSelect`
-- `EstadoBadge`
-- `PriceTag`
+- `EventCardComponent`
+- `EventListComponent`
+- `EventFiltersComponent`
+- `EventDetailComponent`
+- `ReservationFormComponent`
+- `AdminEventTableComponent`
+- `TipoSelectComponent`
+- `EstadoBadgeComponent`
+- `PriceTagComponent`
+
+Y como piezas estructurales de Angular conviene prever:
+
+- `app.routes.ts`,
+- layouts publico, cliente y admin,
+- componentes de pagina,
+- servicios por dominio,
+- guards provisionales de navegacion si se quiere simular sesion.
 
 ### 14.2. Formularios con validacion y gestion de errores
 
@@ -751,6 +795,8 @@ El front debe validar:
 - datos obligatorios,
 - consistencia basica del formulario.
 
+En Angular, esto encaja mejor con **Reactive Forms**, validadores personalizados y mensajes de error por control.
+
 ### 14.3. Consumo de API
 
 Debe hacerse con una capa clara de servicios y, si es posible:
@@ -760,6 +806,13 @@ Debe hacerse con una capa clara de servicios y, si es posible:
 - enriquecimiento de reservas con datos de evento,
 - manejo de errores de red.
 
+En Angular, eso encaja especialmente bien con:
+
+- `HttpClient`,
+- `Resolvers` si se desean precargas concretas,
+- `lazy loading` de rutas,
+- y adaptadores para combinar datos de distintos endpoints.
+
 ### 14.4. Gestion de sesion
 
 El PDF la exige, pero con la API actual solo puede existir una solucion provisional. Ejemplos de enfoque provisional:
@@ -767,6 +820,8 @@ El PDF la exige, pero con la API actual solo puede existir una solucion provisio
 - selector local de usuario de pruebas,
 - almacenamiento local de `username`,
 - simulacion de "usuario activo" sin seguridad real.
+
+Si se implementa en Angular, conviene encapsular esa logica temporal en un servicio especifico, por ejemplo `SessionService`, para que luego pueda sustituirse por autenticacion real sin rehacer toda la app.
 
 Esto puede servir para demo tecnica, pero **no equivale** a autenticacion real.
 
