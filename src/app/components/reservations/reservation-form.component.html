@@ -1,0 +1,27 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="reservation-form">
+  <h3>Reservar plazas</h3>
+
+  <div class="field">
+    <label for="cantidad">Cantidad (máx. {{ disponibles }})</label>
+    <input id="cantidad" type="number" formControlName="cantidad" min="1" [max]="disponibles" />
+    @if (form.get('cantidad')?.hasError('max')) {
+      <span class="error">Solo quedan {{ disponibles }} plazas disponibles.</span>
+    }
+    @if (form.get('cantidad')?.hasError('min')) {
+      <span class="error">La cantidad mínima es 1.</span>
+    }
+  </div>
+
+  <div class="field">
+    <label for="observaciones">Observaciones</label>
+    <textarea id="observaciones" formControlName="observaciones" rows="3" placeholder="Opcional"></textarea>
+  </div>
+
+  <div class="total">
+    Total: <strong>{{ total | currency:'EUR' }}</strong>
+  </div>
+
+  <button type="submit" class="btn-primary" [disabled]="form.invalid || disponibles <= 0">
+    Confirmar reserva
+  </button>
+</form>

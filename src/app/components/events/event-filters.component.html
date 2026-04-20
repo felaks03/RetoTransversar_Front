@@ -1,0 +1,28 @@
+<div class="filters" [formGroup]="form">
+  <div class="filter-group">
+    <label for="filter-tipo">Tipo</label>
+    <select id="filter-tipo" formControlName="tipoId">
+      <option [ngValue]="null">Todos los tipos</option>
+      @for (tipo of tipos; track tipo.idTipo) {
+        <option [ngValue]="tipo.idTipo">{{ tipo.nombre }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label for="filter-nombre">Nombre</label>
+    <input id="filter-nombre" formControlName="nombre" placeholder="Buscar por nombre…" />
+  </div>
+
+  <div class="filter-group">
+    <label for="filter-direccion">Dirección</label>
+    <input id="filter-direccion" formControlName="direccion" placeholder="Buscar por dirección…" />
+  </div>
+
+  <div class="filter-group">
+    <label for="filter-precio">Precio máximo</label>
+    <input id="filter-precio" type="number" formControlName="precioMaximo" placeholder="€" min="0" />
+  </div>
+
+  <button type="button" class="btn-secondary" (click)="reset()">Limpiar</button>
+</div>

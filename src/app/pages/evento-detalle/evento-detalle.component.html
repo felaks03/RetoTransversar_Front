@@ -1,0 +1,76 @@
+<section class="detalle-page">
+  @if (loading) {
+    <div class="spinner-container"><span class="spinner"></span></div>
+  } @else if (!evento) {
+    <p class="empty">Evento no encontrado.</p>
+    <a routerLink="/eventos" class="link">← Volver a eventos</a>
+  } @else {
+    <a routerLink="/eventos" class="link back-link">← Volver a eventos</a>
+
+    <div class="detalle-layout">
+      <div class="detalle-info">
+        <div class="meta-row">
+          <app-estado-badge [estado]="evento.estado" />
+          <span class="tipo-badge">{{ tipoNombre }}</span>
+        </div>
+
+        <h1>{{ evento.nombre }}</h1>
+        <p class="descripcion">{{ evento.descripcion }}</p>
+
+        <dl class="details-grid">
+          <div>
+            <dt>Fecha inicio</dt>
+            <dd>{{ evento.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</dd>
+          </div>
+          <div>
+            <dt>Duración</dt>
+            <dd>{{ evento.duracion }} horas</dd>
+          </div>
+          <div>
+            <dt>Dirección</dt>
+            <dd>{{ evento.direccion }}</dd>
+          </div>
+          <div>
+            <dt>Precio</dt>
+            <dd>{{ evento.precio | currency:'EUR' }}</dd>
+          </div>
+          <div>
+            <dt>Aforo máximo</dt>
+            <dd>{{ evento.aforoMaximo }}</dd>
+          </div>
+          <div>
+            <dt>Mínimo asistencia</dt>
+            <dd>{{ evento.minimoAsistencia }}</dd>
+          </div>
+          <div>
+            <dt>Plazas disponibles</dt>
+            <dd class="disponibles">{{ disponibles }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <aside class="detalle-sidebar">
+        @if (!isLoggedIn) {
+          <div class="login-prompt">
+            <p>Inicia sesión para reservar.</p>
+            <a routerLink="/login" class="btn-primary">Iniciar sesión</a>
+          </div>
+        } @else if (!isActivo) {
+          <div class="login-prompt">
+            <p>Este evento no está activo y no acepta reservas.</p>
+          </div>
+        } @else if (disponibles <= 0) {
+          <div class="login-prompt">
+            <p>No quedan plazas disponibles.</p>
+          </div>
+        } @else {
+          <app-reservation-form
+            [idEvento]="evento.idEvento"
+            [precio]="evento.precio"
+            [disponibles]="disponibles"
+            (submitted)="onReservaSubmitted($event)" />
+        }
+      </aside>
+    </div>
+  }
+</section>

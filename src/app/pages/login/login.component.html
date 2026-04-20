@@ -1,0 +1,25 @@
+<section class="login-page">
+  <div class="login-card">
+    <h1>Iniciar sesión</h1>
+    <p class="subtitle">Introduce tu nombre de usuario para acceder.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label for="username">Usuario</label>
+        <input id="username" formControlName="username" placeholder="username" autocomplete="username" />
+      </div>
+
+      <div class="field">
+        <label for="rol">Rol</label>
+        <select id="rol" formControlName="rol">
+          <option value="cliente">Cliente</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="form.invalid || submitting">
+        {{ submitting ? 'Entrando…' : 'Entrar' }}
+      </button>
+    </form>
+  </div>
+</section>

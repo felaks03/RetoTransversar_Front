@@ -1,0 +1,142 @@
+.main-header {
+  background: var(--color-primary, #1a365d);
+  color: #fff;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 60px;
+}
+
+.nav-brand {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.nav-links a, .dropdown-toggle {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.nav-links a:hover, .dropdown-toggle:hover,
+.nav-links a.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0.25rem 0 0;
+  min-width: 160px;
+  z-index: 200;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu a {
+  color: #333;
+  padding: 0.5rem 1rem;
+  display: block;
+  border-radius: 0;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu a.active {
+  background: var(--color-primary-light, #e2e8f0);
+  color: var(--color-primary, #1a365d);
+}
+
+.nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.nav-user {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.btn {
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-login {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.btn-login:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-logout {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.btn-logout:hover {
+  background: rgba(220, 38, 38, 0.8);
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.75rem 0;
+  }
+
+  .nav-links {
+    order: 3;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .nav-auth {
+    order: 2;
+  }
+}

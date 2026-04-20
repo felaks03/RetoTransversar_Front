@@ -1,0 +1,80 @@
+<section class="admin-page">
+  <div class="page-header">
+    <h1>Gestión de usuarios</h1>
+    <button class="btn-primary" (click)="openNew()">+ Nuevo usuario</button>
+  </div>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Dirección</th>
+        <th>Registro</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (u of usuarios; track u.email) {
+        <tr>
+          <td>{{ u.email }}</td>
+          <td>{{ u.nombre }}</td>
+          <td>{{ u.apellidos }}</td>
+          <td>{{ u.direccion }}</td>
+          <td>{{ u.fechaRegistro | date:'dd/MM/yy' }}</td>
+          <td class="actions">
+            <button class="btn-sm" (click)="openEdit(u)">Editar</button>
+            <button class="btn-sm btn-sm-danger" (click)="confirmDelete(u)">Eliminar</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (showForm) {
+    <div class="overlay" (click)="showForm = false">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h2>{{ editing ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+        <form [formGroup]="form" (ngSubmit)="save()">
+          <div class="field">
+            <label>Username</label>
+            <input formControlName="username" />
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" formControlName="password" autocomplete="new-password" />
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" formControlName="email" />
+          </div>
+          <div class="field">
+            <label>Nombre</label>
+            <input formControlName="nombre" />
+          </div>
+          <div class="field">
+            <label>Apellidos</label>
+            <input formControlName="apellidos" />
+          </div>
+          <div class="field">
+            <label>Dirección</label>
+            <input formControlName="direccion" />
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="showForm = false">Cancelar</button>
+            <button type="submit" class="btn-primary" [disabled]="form.invalid">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (deleteTarget) {
+    <app-confirm-dialog
+      title="Eliminar usuario"
+      [message]="'¿Eliminar el usuario «' + deleteTarget.nombre + ' ' + deleteTarget.apellidos + '»?'"
+      (confirmed)="doDelete()"
+      (cancelled)="deleteTarget = null" />
+  }
+</section>
