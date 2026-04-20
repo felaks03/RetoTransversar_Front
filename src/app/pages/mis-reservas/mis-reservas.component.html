@@ -1,0 +1,37 @@
+<section class="reservas-page">
+  <h1>Mis reservas</h1>
+
+  @if (loading) {
+    <div class="spinner-container"><span class="spinner"></span></div>
+  } @else if (reservas.length === 0) {
+    <div class="empty">
+      <p>No tienes reservas activas.</p>
+      <a routerLink="/eventos" class="btn-primary">Explorar eventos</a>
+    </div>
+  } @else {
+    <div class="reservas-list">
+      @for (item of reservas; track item.reserva.idReserva) {
+        <div class="reserva-card">
+          <div class="reserva-info">
+            <h3>
+              @if (item.evento) {
+                <a [routerLink]="['/eventos', item.evento.idEvento]">{{ item.evento.nombre }}</a>
+              } @else {
+                Evento #{{ item.reserva.idEvento }}
+              }
+            </h3>
+            @if (item.evento) {
+              <p class="fecha">{{ item.evento.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</p>
+              <p class="direccion">{{ item.evento.direccion }}</p>
+            }
+          </div>
+          <div class="reserva-details">
+            <span class="cantidad">{{ item.reserva.cantidad }} plaza{{ item.reserva.cantidad > 1 ? 's' : '' }}</span>
+            <span class="precio">{{ item.reserva.precioVenta * item.reserva.cantidad | currency:'EUR' }}</span>
+          </div>
+          <button class="btn-danger" (click)="deleteReserva(item.reserva.idReserva)">Cancelar</button>
+        </div>
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,28 @@
+<section class="home">
+  <div class="hero">
+    <h1>Descubre eventos increíbles</h1>
+    <p>Encuentra y reserva los mejores eventos cerca de ti.</p>
+    <a routerLink="/eventos" class="btn-primary">Ver todos los eventos</a>
+  </div>
+
+  @if (loading) {
+    <div class="spinner-container"><span class="spinner"></span></div>
+  } @else {
+    @if (destacados.length > 0) {
+      <section class="section">
+        <h2>Eventos destacados</h2>
+        <app-event-list [eventos]="destacados" />
+      </section>
+    }
+
+    @if (activos.length > 0) {
+      <section class="section">
+        <div class="section-header">
+          <h2>Eventos activos</h2>
+          <a routerLink="/eventos" class="link">Ver todos →</a>
+        </div>
+        <app-event-list [eventos]="activos" />
+      </section>
+    }
+  }
+</section>

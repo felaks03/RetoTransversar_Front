@@ -1,0 +1,35 @@
+<header class="main-header">
+  <nav class="nav-container">
+    <a routerLink="/" class="nav-brand">Reto Eventos</a>
+
+    <ul class="nav-links">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+      <li><a routerLink="/eventos" routerLinkActive="active">Eventos</a></li>
+
+      @if (session.isLoggedIn$ | async) {
+        <li><a routerLink="/reservas" routerLinkActive="active">Mis Reservas</a></li>
+      }
+
+      @if (session.isAdmin$ | async) {
+        <li class="dropdown">
+          <span class="dropdown-toggle">Admin</span>
+          <ul class="dropdown-menu">
+            <li><a routerLink="/admin/eventos" routerLinkActive="active">Eventos</a></li>
+            <li><a routerLink="/admin/tipos" routerLinkActive="active">Tipos</a></li>
+            <li><a routerLink="/admin/perfiles" routerLinkActive="active">Perfiles</a></li>
+            <li><a routerLink="/admin/usuarios" routerLinkActive="active">Usuarios</a></li>
+          </ul>
+        </li>
+      }
+    </ul>
+
+    <div class="nav-auth">
+      @if (session.currentUser$ | async; as user) {
+        <span class="nav-user">{{ user.nombre }} ({{ user.rol }})</span>
+        <button class="btn btn-logout" (click)="logout()">Cerrar sesión</button>
+      } @else {
+        <a routerLink="/login" class="btn btn-login">Iniciar sesión</a>
+      }
+    </div>
+  </nav>
+</header>

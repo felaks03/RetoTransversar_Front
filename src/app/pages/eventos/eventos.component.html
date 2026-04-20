@@ -1,0 +1,13 @@
+<section class="eventos-page">
+  <h1>Eventos activos</h1>
+
+  <app-event-filters (filtersChanged)="onFiltersChanged($event)" />
+
+  @if (loading) {
+    <div class="spinner-container"><span class="spinner"></span></div>
+  } @else if (filtered.length === 0) {
+    <p class="empty">No se encontraron eventos con esos filtros.</p>
+  } @else {
+    <app-event-list [eventos]="filtered" />
+  }
+</section>

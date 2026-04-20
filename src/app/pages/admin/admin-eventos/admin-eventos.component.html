@@ -1,0 +1,123 @@
+<section class="admin-page">
+  <div class="page-header">
+    <h1>Gestión de eventos</h1>
+    <button class="btn-primary" (click)="openNew()">+ Nuevo evento</button>
+  </div>
+
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Precio</th>
+          <th>Aforo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (evento of eventos; track evento.idEvento) {
+          <tr>
+            <td>{{ evento.idEvento }}</td>
+            <td>{{ evento.nombre }}</td>
+            <td>{{ getTipoNombre(evento.idTipo) }}</td>
+            <td><app-estado-badge [estado]="evento.estado" /></td>
+            <td>{{ evento.fechaInicio | date:'dd/MM/yy' }}</td>
+            <td>{{ evento.precio | currency:'EUR' }}</td>
+            <td>{{ evento.aforoMaximo }}</td>
+            <td class="actions">
+              <button class="btn-sm" (click)="openEdit(evento)">Editar</button>
+              @if (evento.estado === 'ACTIVO') {
+                <button class="btn-sm btn-sm-warning" (click)="cancelEvento(evento)">Cancelar</button>
+              }
+              <button class="btn-sm btn-sm-danger" (click)="confirmDelete(evento)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (showForm) {
+    <div class="overlay" (click)="showForm = false">
+      <div class="modal modal-lg" (click)="$event.stopPropagation()">
+        <h2>{{ editing ? 'Editar evento' : 'Nuevo evento' }}</h2>
+        <form [formGroup]="form" (ngSubmit)="save()">
+          <div class="form-grid">
+            <div class="field">
+              <label>Nombre</label>
+              <input formControlName="nombre" />
+            </div>
+            <div class="field">
+              <label>Tipo</label>
+              <select formControlName="idTipo">
+                <option [ngValue]="null" disabled>Seleccionar…</option>
+                @for (tipo of tipos; track tipo.idTipo) {
+                  <option [ngValue]="tipo.idTipo">{{ tipo.nombre }}</option>
+                }
+              </select>
+            </div>
+            <div class="field span-2">
+              <label>Descripción</label>
+              <textarea formControlName="descripcion" rows="2"></textarea>
+            </div>
+            <div class="field">
+              <label>Fecha inicio</label>
+              <input type="datetime-local" formControlName="fechaInicio" />
+            </div>
+            <div class="field">
+              <label>Duración (h)</label>
+              <input type="number" formControlName="duracion" min="1" />
+            </div>
+            <div class="field span-2">
+              <label>Dirección</label>
+              <input formControlName="direccion" />
+            </div>
+            <div class="field">
+              <label>Estado</label>
+              <select formControlName="estado">
+                @for (e of estados; track e) {
+                  <option [value]="e">{{ e }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label>Destacado</label>
+              <select formControlName="destacado">
+                <option value="S">Sí</option>
+                <option value="N">No</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Aforo máximo</label>
+              <input type="number" formControlName="aforoMaximo" min="1" />
+            </div>
+            <div class="field">
+              <label>Mínimo asistencia</label>
+              <input type="number" formControlName="minimoAsistencia" min="0" />
+            </div>
+            <div class="field">
+              <label>Precio (€)</label>
+              <input type="number" formControlName="precio" min="0" step="0.01" />
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="showForm = false">Cancelar</button>
+            <button type="submit" class="btn-primary" [disabled]="form.invalid">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (deleteTarget) {
+    <app-confirm-dialog
+      title="Eliminar evento"
+      [message]="'¿Eliminar el evento «' + deleteTarget.nombre + '»?'"
+      (confirmed)="doDelete()"
+      (cancelled)="deleteTarget = null" />
+  }
+</section>

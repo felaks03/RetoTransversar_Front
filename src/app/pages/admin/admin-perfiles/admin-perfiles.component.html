@@ -1,0 +1,54 @@
+<section class="admin-page">
+  <div class="page-header">
+    <h1>Gestión de perfiles</h1>
+    <button class="btn-primary" (click)="openNew()">+ Nuevo perfil</button>
+  </div>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (perfil of perfiles; track perfil.idPerfil) {
+        <tr>
+          <td>{{ perfil.idPerfil }}</td>
+          <td>{{ perfil.nombre }}</td>
+          <td class="actions">
+            <button class="btn-sm" (click)="openEdit(perfil)">Editar</button>
+            <button class="btn-sm btn-sm-danger" (click)="confirmDelete(perfil)">Eliminar</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (showForm) {
+    <div class="overlay" (click)="showForm = false">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h2>{{ editing ? 'Editar perfil' : 'Nuevo perfil' }}</h2>
+        <form [formGroup]="form" (ngSubmit)="save()">
+          <div class="field">
+            <label>Nombre</label>
+            <input formControlName="nombre" />
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="showForm = false">Cancelar</button>
+            <button type="submit" class="btn-primary" [disabled]="form.invalid">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (deleteTarget) {
+    <app-confirm-dialog
+      title="Eliminar perfil"
+      [message]="'¿Eliminar el perfil «' + deleteTarget.nombre + '»?'"
+      (confirmed)="doDelete()"
+      (cancelled)="deleteTarget = null" />
+  }
+</section>
