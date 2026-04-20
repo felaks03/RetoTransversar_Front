@@ -9,8 +9,8 @@
 .btn-sm:hover { background: var(--surface); }
 .btn-sm-danger { color: var(--danger); border-color: var(--danger); }
 .btn-sm-danger:hover { background: var(--danger); color: #fff; }
-.btn-sm-warning { color: #b45309; border-color: #b45309; }
-.btn-sm-warning:hover { background: #b45309; color: #fff; }
+.btn-sm-warning { color: #555; border-color: #999; }
+.btn-sm-warning:hover { background: #555; color: #fff; }
 .btn-primary { padding: 0.55rem 1.25rem; background: var(--primary); color: #fff; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-secondary { padding: 0.55rem 1.25rem; border: 1px solid var(--border); background: #fff; border-radius: var(--radius); cursor: pointer; }
@@ -23,5 +23,5 @@
 .field { display: flex; flex-direction: column; gap: 0.25rem; }
 .field label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
 .field input, .field select, .field textarea { padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.95rem; }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,.15); }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #999; box-shadow: 0 0 0 2px rgba(0,0,0,.08); }
 .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem; }

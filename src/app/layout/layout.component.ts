@@ -43,9 +43,9 @@ import { NotificationService } from '../services/notification.service';
       justify-content: space-between;
       font-size: 0.9rem;
     }
-    .notification--success { background: #d4edda; color: #155724; }
-    .notification--error   { background: #f8d7da; color: #721c24; }
-    .notification--info    { background: #d1ecf1; color: #0c5460; }
+    .notification--success { background: #fafafa; color: #333; border-left: 3px solid #333; }
+    .notification--error   { background: #fafafa; color: #333; border-left: 3px solid #999; }
+    .notification--info    { background: #fafafa; color: #333; border-left: 3px solid #bbb; }
     .notification__close {
       background: none;
       border: none;

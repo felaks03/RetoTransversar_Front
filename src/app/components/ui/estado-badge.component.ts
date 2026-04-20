@@ -14,10 +14,13 @@ import { Estado } from '../../models/evento.model';
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.025em;
+      border: 1px solid #ccc;
+      background: #fafafa;
+      color: #555;
     }
-    .badge--activo    { background: #c6f6d5; color: #22543d; }
-    .badge--cancelado { background: #fed7d7; color: #9b2c2c; }
-    .badge--terminado { background: #e2e8f0; color: #4a5568; }
+    .badge--activo    { border-color: #999; color: #333; }
+    .badge--cancelado { border-color: #bbb; color: #777; }
+    .badge--terminado { border-color: #ddd; color: #999; }
   `]
 })
 export class EstadoBadgeComponent {

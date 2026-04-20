@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { EventoDto, Destacado } from '../../models/evento.model';
@@ -14,13 +15,20 @@ import { TiposCacheService } from '../../services/tipos-cache.service';
   styleUrl: './event-card.component.css',
 })
 export class EventCardComponent {
-  @Input({ required: true }) evento!: EventoDto;
+  private _evento!: EventoDto;
+  tipoNombre$: Observable<string> = of('');
+
+  @Input({ required: true })
+  set evento(value: EventoDto) {
+    this._evento = value;
+    this.tipoNombre$ = this.tiposCache.getNombreById(value.idTipo);
+  }
+
+  get evento(): EventoDto {
+    return this._evento;
+  }
 
   constructor(public tiposCache: TiposCacheService) {}
-
-  get tipoNombre$() {
-    return this.tiposCache.getNombreById(this.evento.idTipo);
-  }
 
   get esDestacado(): boolean {
     return this.evento.destacado === Destacado.S;
