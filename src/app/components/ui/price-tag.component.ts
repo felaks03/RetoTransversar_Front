@@ -9,7 +9,7 @@ import { CurrencyPipe } from '@angular/common';
   styles: [`
     .price {
       font-weight: 600;
-      color: var(--color-primary, #1a365d);
+      color: #333;
     }
   `]
 })
