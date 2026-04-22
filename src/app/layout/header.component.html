@@ -25,7 +25,7 @@
 
     <div class="nav-auth">
       @if (session.currentUser$ | async; as user) {
-        <span class="nav-user">{{ user.nombre }} ({{ user.rol }})</span>
+        <span class="nav-user">{{ user.nombre || user.username }} ({{ user.rol === 'ROLE_ADMON' ? 'Admin' : 'Cliente' }})</span>
         <button class="btn btn-logout" (click)="logout()">Cerrar sesión</button>
       } @else {
         <a routerLink="/login" class="btn btn-login">Iniciar sesión</a>

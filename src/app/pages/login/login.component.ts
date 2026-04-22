@@ -23,22 +23,32 @@ export class LoginComponent {
   ) {
     this.form = this.fb.group({
       username: ['', Validators.required],
-      rol: ['cliente', Validators.required],
+      password: ['', Validators.required],
     });
   }
 
   onSubmit(): void {
     if (this.form.invalid || this.submitting) return;
     this.submitting = true;
-    const { username, rol } = this.form.value;
+    const { username, password } = this.form.value;
 
-    this.session.login(username, rol).subscribe({
-      next: () => {
-        this.notification.success(`Bienvenido, ${username}`);
-        this.router.navigate(['/']);
+    this.session.login(username, password).subscribe({
+      next: (user) => {
+        this.notification.success(`Bienvenido, ${user.username}`);
+        if (user.rol === 'ROLE_ADMON') {
+          this.router.navigate(['/admin/eventos']);
+        } else {
+          this.router.navigate(['/']);
+        }
       },
-      error: () => {
-        this.notification.error('Usuario no encontrado');
+      error: (err) => {
+        if (err.status === 401) {
+          this.notification.error('Usuario o contraseña incorrectos');
+        } else if (err.status === 403) {
+          this.notification.error('Tu cuenta está desactivada');
+        } else {
+          this.notification.error('No se pudo conectar con el servidor');
+        }
         this.submitting = false;
       },
     });

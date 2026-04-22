@@ -41,4 +41,14 @@ export class ReservasService {
   findByEvento(idEvento: number): Observable<ReservaDto[]> {
     return this.http.get<ReservaDto[]>(`${this.url}/por-evento/${idEvento}`);
   }
+
+  reservar(idEvento: number, username: string, cantidad: number, observaciones?: string): Observable<string> {
+    let params = `username=${encodeURIComponent(username)}&cantidad=${cantidad}`;
+    if (observaciones) params += `&observaciones=${encodeURIComponent(observaciones)}`;
+    return this.http.post<string>(`${this.url}/reservar/${idEvento}?${params}`, {});
+  }
+
+  cancelarReserva(idReserva: number): Observable<string> {
+    return this.http.delete<string>(`${this.url}/cancelar/${idReserva}`);
+  }
 }
