@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -22,6 +22,7 @@ export class AdminUsuariosComponent implements OnInit, OnDestroy {
   showForm = false;
   deleteTarget: UsuarioDto | null = null;
   private destroy$ = new Subject<void>();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder,
@@ -42,7 +43,10 @@ export class AdminUsuariosComponent implements OnInit, OnDestroy {
   }
 
   load(): void {
-    this.usuariosService.findAll().pipe(takeUntil(this.destroy$)).subscribe(d => this.usuarios = d);
+    this.usuariosService.findAll().pipe(takeUntil(this.destroy$)).subscribe(d => {
+      this.usuarios = d;
+      this.cdr.markForCheck();
+    });
   }
 
   openNew(): void {
@@ -85,6 +89,7 @@ export class AdminUsuariosComponent implements OnInit, OnDestroy {
       next: () => {
         this.notification.success(this.editing ? 'Usuario actualizado' : 'Usuario creado');
         this.showForm = false;
+        this.cdr.markForCheck();
         this.load();
       },
       error: () => this.notification.error('Error al guardar'),
@@ -102,11 +107,13 @@ export class AdminUsuariosComponent implements OnInit, OnDestroy {
       next: () => {
         this.notification.success('Usuario eliminado');
         this.deleteTarget = null;
+        this.cdr.markForCheck();
         this.load();
       },
       error: () => {
         this.notification.error('Error al eliminar');
         this.deleteTarget = null;
+        this.cdr.markForCheck();
       },
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TiposService } from '../../../services/tipos.service';
@@ -20,6 +20,7 @@ export class AdminTiposComponent implements OnInit, OnDestroy {
   showForm = false;
   deleteTarget: TipoDto | null = null;
   private destroy$ = new Subject<void>();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder,
@@ -36,7 +37,10 @@ export class AdminTiposComponent implements OnInit, OnDestroy {
   }
 
   load(): void {
-    this.tiposService.findAll().pipe(takeUntil(this.destroy$)).subscribe(d => this.tipos = d);
+    this.tiposService.findAll().pipe(takeUntil(this.destroy$)).subscribe(d => {
+      this.tipos = d;
+      this.cdr.markForCheck();
+    });
   }
 
   openNew(): void {
@@ -62,6 +66,7 @@ export class AdminTiposComponent implements OnInit, OnDestroy {
       next: () => {
         this.notification.success(this.editing ? 'Tipo actualizado' : 'Tipo creado');
         this.showForm = false;
+        this.cdr.markForCheck();
         this.load();
       },
       error: () => this.notification.error('Error al guardar'),
@@ -78,11 +83,13 @@ export class AdminTiposComponent implements OnInit, OnDestroy {
       next: () => {
         this.notification.success('Tipo eliminado');
         this.deleteTarget = null;
+        this.cdr.markForCheck();
         this.load();
       },
       error: () => {
         this.notification.error('Error al eliminar');
         this.deleteTarget = null;
+        this.cdr.markForCheck();
       },
     });
   }

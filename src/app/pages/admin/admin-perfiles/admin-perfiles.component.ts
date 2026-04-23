@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { PerfilesService } from '../../../services/perfiles.service';
@@ -20,6 +20,7 @@ export class AdminPerfilesComponent implements OnInit, OnDestroy {
   showForm = false;
   deleteTarget: PerfilDto | null = null;
   private destroy$ = new Subject<void>();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder,
@@ -35,7 +36,10 @@ export class AdminPerfilesComponent implements OnInit, OnDestroy {
   }
 
   load(): void {
-    this.perfilesService.findAll().pipe(takeUntil(this.destroy$)).subscribe(d => this.perfiles = d);
+    this.perfilesService.findAll().pipe(takeUntil(this.destroy$)).subscribe(d => {
+      this.perfiles = d;
+      this.cdr.markForCheck();
+    });
   }
 
   openNew(): void {
@@ -61,6 +65,7 @@ export class AdminPerfilesComponent implements OnInit, OnDestroy {
       next: () => {
         this.notification.success(this.editing ? 'Perfil actualizado' : 'Perfil creado');
         this.showForm = false;
+        this.cdr.markForCheck();
         this.load();
       },
       error: () => this.notification.error('Error al guardar'),
@@ -77,11 +82,13 @@ export class AdminPerfilesComponent implements OnInit, OnDestroy {
       next: () => {
         this.notification.success('Perfil eliminado');
         this.deleteTarget = null;
+        this.cdr.markForCheck();
         this.load();
       },
       error: () => {
         this.notification.error('Error al eliminar');
         this.deleteTarget = null;
+        this.cdr.markForCheck();
       },
     });
   }

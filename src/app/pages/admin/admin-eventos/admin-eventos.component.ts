@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe, CurrencyPipe } from '@angular/common';
@@ -26,6 +26,7 @@ export class AdminEventosComponent implements OnInit, OnDestroy {
   deleteTarget: EventoDto | null = null;
   estados = Object.values(Estado);
   private destroy$ = new Subject<void>();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder,
@@ -48,12 +49,18 @@ export class AdminEventosComponent implements OnInit, OnDestroy {
       minimoAsistencia: [0, [Validators.required, Validators.min(0)]],
       precio: [0, [Validators.required, Validators.min(0)]],
     });
-    this.tiposService.findAll().pipe(takeUntil(this.destroy$)).subscribe(t => this.tipos = t);
+    this.tiposService.findAll().pipe(takeUntil(this.destroy$)).subscribe(t => {
+      this.tipos = t;
+      this.cdr.markForCheck();
+    });
     this.load();
   }
 
   load(): void {
-    this.eventosService.findAll().pipe(takeUntil(this.destroy$)).subscribe(d => this.eventos = d);
+    this.eventosService.findAll().pipe(takeUntil(this.destroy$)).subscribe(d => {
+      this.eventos = d;
+      this.cdr.markForCheck();
+    });
   }
 
   openNew(): void {
@@ -94,6 +101,7 @@ export class AdminEventosComponent implements OnInit, OnDestroy {
       next: () => {
         this.notification.success(this.editing ? 'Evento actualizado' : 'Evento creado');
         this.showForm = false;
+        this.cdr.markForCheck();
         this.load();
       },
       error: () => this.notification.error('Error al guardar'),
@@ -104,6 +112,7 @@ export class AdminEventosComponent implements OnInit, OnDestroy {
     this.eventosService.cancelById(evento.idEvento).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.notification.success('Evento cancelado');
+        this.cdr.markForCheck();
         this.load();
       },
       error: () => this.notification.error('Error al cancelar'),
@@ -120,11 +129,13 @@ export class AdminEventosComponent implements OnInit, OnDestroy {
       next: () => {
         this.notification.success('Evento eliminado');
         this.deleteTarget = null;
+        this.cdr.markForCheck();
         this.load();
       },
       error: () => {
         this.notification.error('Error al eliminar');
         this.deleteTarget = null;
+        this.cdr.markForCheck();
       },
     });
   }

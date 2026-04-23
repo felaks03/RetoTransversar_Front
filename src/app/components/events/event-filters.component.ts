@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, OnDestroy, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, OnDestroy, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { TipoDto } from '../../models/tipo.model';
@@ -24,6 +24,7 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   tipos: TipoDto[] = [];
   private destroy$ = new Subject<void>();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder,
@@ -38,7 +39,10 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
       precioMaximo: [null],
     });
 
-    this.tiposCache.getAll().pipe(takeUntil(this.destroy$)).subscribe(t => this.tipos = t);
+    this.tiposCache.getAll().pipe(takeUntil(this.destroy$)).subscribe(t => {
+      this.tipos = t;
+      this.cdr.markForCheck();
+    });
 
     this.form.valueChanges
       .pipe(debounceTime(400), takeUntil(this.destroy$))
@@ -51,6 +55,12 @@ export class EventFiltersComponent implements OnInit, OnDestroy {
   }
 
   reset(): void {
-    this.form.reset();
+    this.form.reset({
+      tipoId: null,
+      nombre: '',
+      direccion: '',
+      precioMaximo: null,
+    });
+    this.cdr.markForCheck();
   }
 }

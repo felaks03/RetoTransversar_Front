@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SessionService } from '../../services/session.service';
@@ -14,6 +14,7 @@ import { NotificationService } from '../../services/notification.service';
 export class LoginComponent {
   form: FormGroup;
   submitting = false;
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder,
@@ -50,6 +51,7 @@ export class LoginComponent {
           this.notification.error('No se pudo conectar con el servidor');
         }
         this.submitting = false;
+        this.cdr.markForCheck();
       },
     });
   }

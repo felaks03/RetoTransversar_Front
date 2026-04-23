@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, switchMap, takeUntil, startWith, BehaviorSubject } from 'rxjs';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { EventosService } from '../../services/eventos.service';
-import { EventoDto, Estado } from '../../models/evento.model';
+import { EventoDto } from '../../models/evento.model';
 import { EventFilters, EventFiltersComponent } from '../../components/events/event-filters.component';
 import { EventListComponent } from '../../components/events/event-list.component';
 
@@ -18,6 +18,7 @@ export class EventosComponent implements OnInit, OnDestroy {
   loading = true;
   private destroy$ = new Subject<void>();
   private filters: EventFilters = { tipoId: null, nombre: '', direccion: '', precioMaximo: null };
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(private eventosService: EventosService) {}
 
@@ -27,14 +28,19 @@ export class EventosComponent implements OnInit, OnDestroy {
         this.eventos = data;
         this.applyFilters();
         this.loading = false;
+        this.cdr.markForCheck();
       },
-      error: () => this.loading = false,
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
     });
   }
 
   onFiltersChanged(f: EventFilters): void {
     this.filters = f;
     this.applyFilters();
+    this.cdr.markForCheck();
   }
 
   private applyFilters(): void {

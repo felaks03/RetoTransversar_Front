@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subject, forkJoin, switchMap, takeUntil } from 'rxjs';
 import { CurrencyPipe, DatePipe } from '@angular/common';
@@ -28,6 +28,7 @@ export class EventoDetalleComponent implements OnInit, OnDestroy {
   loading = true;
   isLoggedIn = false;
   private destroy$ = new Subject<void>();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -39,7 +40,10 @@ export class EventoDetalleComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.session.isLoggedIn$.pipe(takeUntil(this.destroy$)).subscribe(v => this.isLoggedIn = v);
+    this.session.isLoggedIn$.pipe(takeUntil(this.destroy$)).subscribe(v => {
+      this.isLoggedIn = v;
+      this.cdr.markForCheck();
+    });
 
     this.route.paramMap.pipe(
       switchMap(params => {
@@ -57,10 +61,17 @@ export class EventoDetalleComponent implements OnInit, OnDestroy {
         this.disponibles = calcularDisponibilidad(evento.aforoMaximo, reservas);
         this.tiposCache.getNombreById(evento.idTipo)
           .pipe(takeUntil(this.destroy$))
-          .subscribe(n => this.tipoNombre = n);
+          .subscribe(n => {
+            this.tipoNombre = n;
+            this.cdr.markForCheck();
+          });
         this.loading = false;
+        this.cdr.markForCheck();
       },
-      error: () => this.loading = false,
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
     });
   }
 
@@ -79,6 +90,7 @@ export class EventoDetalleComponent implements OnInit, OnDestroy {
             .subscribe(r => {
               this.reservas = r;
               this.disponibles = calcularDisponibilidad(this.evento!.aforoMaximo, r);
+              this.cdr.markForCheck();
             });
         }
       },

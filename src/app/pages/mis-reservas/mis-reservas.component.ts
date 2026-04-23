@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subject, forkJoin, takeUntil, switchMap, of } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
@@ -25,6 +25,7 @@ export class MisReservasComponent implements OnInit, OnDestroy {
   reservas: ReservaEnriquecida[] = [];
   loading = true;
   private destroy$ = new Subject<void>();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(
     private reservasService: ReservasService,
@@ -35,7 +36,11 @@ export class MisReservasComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const user = this.session.currentUser;
-    if (!user) return;
+    if (!user) {
+      this.loading = false;
+      this.cdr.markForCheck();
+      return;
+    }
 
     this.reservasService.findByUsuarioActivo(user.username).pipe(
       switchMap(reservas => {
@@ -52,8 +57,12 @@ export class MisReservasComponent implements OnInit, OnDestroy {
       next: data => {
         this.reservas = data;
         this.loading = false;
+        this.cdr.markForCheck();
       },
-      error: () => this.loading = false,
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
     });
   }
 
@@ -62,6 +71,7 @@ export class MisReservasComponent implements OnInit, OnDestroy {
       next: () => {
         this.reservas = this.reservas.filter(r => r.reserva.idReserva !== id);
         this.notification.success('Reserva cancelada');
+        this.cdr.markForCheck();
       },
       error: () => this.notification.error('Error al cancelar la reserva'),
     });

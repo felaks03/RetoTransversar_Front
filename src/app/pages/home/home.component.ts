@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { EventosService } from '../../services/eventos.service';
@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   activos: EventoDto[] = [];
   loading = true;
   private destroy$ = new Subject<void>();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor(private eventosService: EventosService) {}
 
@@ -29,8 +30,12 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.destacados = destacados;
         this.activos = activos.slice(0, 6);
         this.loading = false;
+        this.cdr.markForCheck();
       },
-      error: () => this.loading = false,
+      error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
     });
   }
 
