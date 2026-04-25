@@ -15,6 +15,8 @@ export class ReservationFormComponent implements OnChanges {
   @Input({ required: true }) idEvento!: number;
   @Input({ required: true }) precio!: number;
   @Input({ required: true }) disponibles!: number;
+  @Input({ required: true }) maxReservable!: number;
+  @Input({ required: true }) plazasDisponiblesUsuario!: number;
   @Output() submitted = new EventEmitter<ReservaPayload>();
 
   form!: FormGroup;
@@ -30,14 +32,18 @@ export class ReservationFormComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['disponibles'] && this.form) {
+    if ((changes['disponibles'] || changes['maxReservable']) && this.form) {
       this.form.get('cantidad')?.setValidators([
         Validators.required,
         Validators.min(1),
-        Validators.max(this.disponibles),
+        Validators.max(Math.max(this.maximoPermitido, 1)),
       ]);
       this.form.get('cantidad')?.updateValueAndValidity();
     }
+  }
+
+  get maximoPermitido(): number {
+    return Math.min(this.disponibles, this.maxReservable);
   }
 
   get total(): number {

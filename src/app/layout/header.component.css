@@ -120,6 +120,16 @@
   border-color: var(--color-primary-light);
 }
 
+.btn-register {
+  background: var(--surface-elevated);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-register:hover {
+  background: var(--surface-strong);
+}
+
 .btn-logout {
   background: var(--surface-elevated);
   color: var(--text-muted);

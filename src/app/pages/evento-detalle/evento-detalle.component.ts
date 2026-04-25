@@ -25,6 +25,8 @@ export class EventoDetalleComponent implements OnInit, OnDestroy {
   reservas: ReservaDto[] = [];
   tipoNombre = '';
   disponibles = 0;
+  plazasDisponiblesUsuario = 10;
+  maxReservable = 0;
   loading = true;
   isLoggedIn = false;
   private destroy$ = new Subject<void>();
@@ -42,6 +44,7 @@ export class EventoDetalleComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.session.isLoggedIn$.pipe(takeUntil(this.destroy$)).subscribe(v => {
       this.isLoggedIn = v;
+      this.updateReservationWindow();
       this.cdr.markForCheck();
     });
 
@@ -58,7 +61,7 @@ export class EventoDetalleComponent implements OnInit, OnDestroy {
       next: ({ evento, reservas }) => {
         this.evento = evento;
         this.reservas = reservas;
-        this.disponibles = calcularDisponibilidad(evento.aforoMaximo, reservas);
+        this.updateReservationWindow();
         this.tiposCache.getNombreById(evento.idTipo)
           .pipe(takeUntil(this.destroy$))
           .subscribe(n => {
@@ -79,23 +82,58 @@ export class EventoDetalleComponent implements OnInit, OnDestroy {
     return this.evento?.estado === Estado.ACTIVO;
   }
 
+  get hasReachedReservationLimit(): boolean {
+    return this.isLoggedIn && this.isActivo && this.disponibles > 0 && this.maxReservable <= 0;
+  }
+
   onReservaSubmitted(payload: ReservaPayload): void {
-    this.reservasService.create(payload).pipe(takeUntil(this.destroy$)).subscribe({
+    this.reservasService
+      .reservar(payload.evento.idEvento, payload.usuario.username, payload.cantidad, payload.observaciones)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
       next: () => {
         this.notification.success('Reserva realizada con éxito');
-        // refresh availability
-        if (this.evento) {
-          this.reservasService.findByEvento(this.evento.idEvento)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(r => {
-              this.reservas = r;
-              this.disponibles = calcularDisponibilidad(this.evento!.aforoMaximo, r);
-              this.cdr.markForCheck();
-            });
-        }
+        this.refreshReservas();
       },
-      error: () => this.notification.error('Error al realizar la reserva'),
+      error: (err) => {
+        const message = typeof err.error === 'string' && err.error.trim()
+          ? err.error
+          : 'Error al realizar la reserva';
+        this.notification.error(message);
+      },
     });
+  }
+
+  private refreshReservas(): void {
+    if (!this.evento) return;
+
+    this.reservasService.findByEvento(this.evento.idEvento)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(r => {
+        this.reservas = r;
+        this.updateReservationWindow();
+        this.cdr.markForCheck();
+      });
+  }
+
+  private updateReservationWindow(): void {
+    if (!this.evento) return;
+
+    this.disponibles = calcularDisponibilidad(this.evento.aforoMaximo, this.reservas);
+
+    const username = this.session.currentUser?.username;
+    if (!username) {
+      this.plazasDisponiblesUsuario = 10;
+      this.maxReservable = Math.min(this.disponibles, 10);
+      return;
+    }
+
+    const reservasUsuario = this.reservas
+      .filter(reserva => reserva.username === username)
+      .reduce((total, reserva) => total + reserva.cantidad, 0);
+
+    this.plazasDisponiblesUsuario = Math.max(0, 10 - reservasUsuario);
+    this.maxReservable = Math.min(this.disponibles, this.plazasDisponiblesUsuario);
   }
 
   ngOnDestroy(): void {

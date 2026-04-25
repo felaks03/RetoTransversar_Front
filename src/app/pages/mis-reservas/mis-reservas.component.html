@@ -29,6 +29,9 @@
             <span class="cantidad">{{ item.reserva.cantidad }} plaza{{ item.reserva.cantidad > 1 ? 's' : '' }}</span>
             <span class="precio">{{ item.reserva.precioVenta * item.reserva.cantidad | currency:'EUR' }}</span>
           </div>
+          @if (item.reserva.observaciones) {
+            <p class="observaciones">{{ item.reserva.observaciones }}</p>
+          }
           <button class="btn-danger" (click)="deleteReserva(item.reserva.idReserva)">Cancelar</button>
         </div>
       }

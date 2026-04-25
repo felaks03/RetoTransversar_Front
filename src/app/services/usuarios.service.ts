@@ -18,6 +18,10 @@ export class UsuariosService {
     return this.http.get<UsuarioDto>(`${this.url}/${encodeURIComponent(username)}`);
   }
 
+  registro(usuario: UsuarioPayload): Observable<UsuarioDto> {
+    return this.http.post<UsuarioDto>(`${this.url}/registro`, usuario);
+  }
+
   create(usuario: UsuarioPayload): Observable<UsuarioDto> {
     return this.http.post<UsuarioDto>(`${this.url}/alta`, usuario);
   }

@@ -63,11 +63,17 @@
           <div class="login-prompt">
             <p>No quedan plazas disponibles.</p>
           </div>
+        } @else if (hasReachedReservationLimit) {
+          <div class="login-prompt">
+            <p>Ya has alcanzado el máximo de 10 entradas para este evento.</p>
+          </div>
         } @else {
           <app-reservation-form
             [idEvento]="evento.idEvento"
             [precio]="evento.precio"
             [disponibles]="disponibles"
+            [maxReservable]="maxReservable"
+            [plazasDisponiblesUsuario]="plazasDisponiblesUsuario"
             (submitted)="onReservaSubmitted($event)" />
         }
       </aside>

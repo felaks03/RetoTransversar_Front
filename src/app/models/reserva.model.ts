@@ -1,7 +1,9 @@
 export interface ReservaDto {
   idReserva: number;
   idEvento: number;
+  username: string;
   precioVenta: number;
+  observaciones: string | null;
   cantidad: number;
 }
 

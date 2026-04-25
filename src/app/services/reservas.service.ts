@@ -45,10 +45,10 @@ export class ReservasService {
   reservar(idEvento: number, username: string, cantidad: number, observaciones?: string): Observable<string> {
     let params = `username=${encodeURIComponent(username)}&cantidad=${cantidad}`;
     if (observaciones) params += `&observaciones=${encodeURIComponent(observaciones)}`;
-    return this.http.post<string>(`${this.url}/reservar/${idEvento}?${params}`, {});
+    return this.http.post(`${this.url}/reservar/${idEvento}?${params}`, {}, { responseType: 'text' });
   }
 
   cancelarReserva(idReserva: number): Observable<string> {
-    return this.http.delete<string>(`${this.url}/cancelar/${idReserva}`);
+    return this.http.delete(`${this.url}/cancelar/${idReserva}`, { responseType: 'text' });
   }
 }

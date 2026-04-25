@@ -1,4 +1,4 @@
-.login-page {
+.registro-page {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,17 +6,17 @@
   padding: 2rem 1rem;
 }
 
-.login-card {
+.registro-card {
   background: var(--surface-elevated);
   border-radius: var(--radius);
   padding: 2.5rem;
   width: 100%;
-  max-width: 400px;
+  max-width: 460px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
 }
 
-.login-card h1 {
+.registro-card h1 {
   margin-bottom: 0.25rem;
 }
 
@@ -39,8 +39,7 @@
   color: var(--text-muted);
 }
 
-.field input,
-.field select {
+.field input {
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -49,8 +48,7 @@
   color: var(--text);
 }
 
-.field input:focus,
-.field select:focus {
+.field input:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(242, 13, 36, 0.16);

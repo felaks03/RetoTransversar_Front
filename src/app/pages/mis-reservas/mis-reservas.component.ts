@@ -67,13 +67,18 @@ export class MisReservasComponent implements OnInit, OnDestroy {
   }
 
   deleteReserva(id: number): void {
-    this.reservasService.deleteById(id).pipe(takeUntil(this.destroy$)).subscribe({
+    this.reservasService.cancelarReserva(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.reservas = this.reservas.filter(r => r.reserva.idReserva !== id);
         this.notification.success('Reserva cancelada');
         this.cdr.markForCheck();
       },
-      error: () => this.notification.error('Error al cancelar la reserva'),
+      error: (err) => {
+        const message = typeof err.error === 'string' && err.error.trim()
+          ? err.error
+          : 'Error al cancelar la reserva';
+        this.notification.error(message);
+      },
     });
   }
 

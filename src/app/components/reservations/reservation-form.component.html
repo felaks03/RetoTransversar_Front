@@ -2,13 +2,16 @@
   <h3>Reservar plazas</h3>
 
   <div class="field">
-    <label for="cantidad">Cantidad (máx. {{ disponibles }})</label>
-    <input id="cantidad" type="number" formControlName="cantidad" min="1" [max]="disponibles" />
+    <label for="cantidad">Cantidad (máx. {{ maximoPermitido }})</label>
+    <input id="cantidad" type="number" formControlName="cantidad" min="1" [max]="maximoPermitido" />
     @if (form.get('cantidad')?.hasError('max')) {
-      <span class="error">Solo quedan {{ disponibles }} plazas disponibles.</span>
+      <span class="error">Puedes reservar hasta {{ maximoPermitido }} plazas en este momento.</span>
     }
     @if (form.get('cantidad')?.hasError('min')) {
       <span class="error">La cantidad mínima es 1.</span>
+    }
+    @if (plazasDisponiblesUsuario < disponibles) {
+      <span class="error">Te quedan {{ plazasDisponiblesUsuario }} plazas dentro de tu límite personal para este evento.</span>
     }
   </div>
 
