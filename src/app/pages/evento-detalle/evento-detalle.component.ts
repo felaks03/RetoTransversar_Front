@@ -92,14 +92,14 @@ export class EventoDetalleComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
       next: () => {
-        this.notification.success('Reserva realizada con éxito');
+        this.notification.success('Tu plaza ya está guardada y la verás en Mis reservas.', 'Reserva confirmada');
         this.refreshReservas();
       },
       error: (err) => {
         const message = typeof err.error === 'string' && err.error.trim()
           ? err.error
           : 'Error al realizar la reserva';
-        this.notification.error(message);
+        this.notification.error(message, 'No se pudo confirmar la reserva');
       },
     });
   }

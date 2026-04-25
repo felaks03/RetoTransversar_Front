@@ -63,12 +63,15 @@ export class AdminPerfilesComponent implements OnInit, OnDestroy {
     const op$ = this.editing ? this.perfilesService.update(data) : this.perfilesService.create(data);
     op$.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.notification.success(this.editing ? 'Perfil actualizado' : 'Perfil creado');
+        this.notification.success(
+          this.editing ? 'Los cambios del perfil ya estan guardados.' : 'El perfil se ha creado correctamente.',
+          this.editing ? 'Perfil actualizado' : 'Perfil creado'
+        );
         this.showForm = false;
         this.cdr.markForCheck();
         this.load();
       },
-      error: () => this.notification.error('Error al guardar'),
+      error: () => this.notification.error('No hemos podido guardar el perfil.', 'Guardado pendiente'),
     });
   }
 
@@ -80,13 +83,13 @@ export class AdminPerfilesComponent implements OnInit, OnDestroy {
     if (!this.deleteTarget) return;
     this.perfilesService.deleteById(this.deleteTarget.idPerfil).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.notification.success('Perfil eliminado');
+        this.notification.success('El perfil se ha eliminado correctamente.', 'Perfil eliminado');
         this.deleteTarget = null;
         this.cdr.markForCheck();
         this.load();
       },
       error: () => {
-        this.notification.error('Error al eliminar');
+        this.notification.error('No hemos podido eliminar el perfil.', 'Eliminacion pendiente');
         this.deleteTarget = null;
         this.cdr.markForCheck();
       },

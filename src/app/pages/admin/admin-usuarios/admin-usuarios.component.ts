@@ -87,12 +87,15 @@ export class AdminUsuariosComponent implements OnInit, OnDestroy {
       : this.usuariosService.create(payload);
     op$.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.notification.success(this.editing ? 'Usuario actualizado' : 'Usuario creado');
+        this.notification.success(
+          this.editing ? 'Los cambios del usuario ya estan guardados.' : 'El usuario se ha creado correctamente.',
+          this.editing ? 'Usuario actualizado' : 'Usuario creado'
+        );
         this.showForm = false;
         this.cdr.markForCheck();
         this.load();
       },
-      error: () => this.notification.error('Error al guardar'),
+      error: () => this.notification.error('No hemos podido guardar el usuario.', 'Guardado pendiente'),
     });
   }
 
@@ -105,13 +108,13 @@ export class AdminUsuariosComponent implements OnInit, OnDestroy {
     // UsuarioDto doesn't have username; we'll use email for now
     this.usuariosService.deleteById(this.deleteTarget.email).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.notification.success('Usuario eliminado');
+        this.notification.success('El usuario se ha retirado del sistema.', 'Usuario eliminado');
         this.deleteTarget = null;
         this.cdr.markForCheck();
         this.load();
       },
       error: () => {
-        this.notification.error('Error al eliminar');
+        this.notification.error('No hemos podido eliminar el usuario.', 'Eliminacion pendiente');
         this.deleteTarget = null;
         this.cdr.markForCheck();
       },

@@ -99,23 +99,26 @@ export class AdminEventosComponent implements OnInit, OnDestroy {
       : this.eventosService.create(payload);
     op$.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.notification.success(this.editing ? 'Evento actualizado' : 'Evento creado');
+        this.notification.success(
+          this.editing ? 'Los cambios ya estan guardados.' : 'El evento se ha creado correctamente.',
+          this.editing ? 'Evento actualizado' : 'Evento creado'
+        );
         this.showForm = false;
         this.cdr.markForCheck();
         this.load();
       },
-      error: () => this.notification.error('Error al guardar'),
+      error: () => this.notification.error('Revisa los datos e intentalo de nuevo.', 'No se pudo guardar el evento'),
     });
   }
 
   cancelEvento(evento: EventoDto): void {
     this.eventosService.cancelById(evento.idEvento).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.notification.success('Evento cancelado');
+        this.notification.success('El evento ha pasado a estado cancelado.', 'Evento cancelado');
         this.cdr.markForCheck();
         this.load();
       },
-      error: () => this.notification.error('Error al cancelar'),
+      error: () => this.notification.error('No hemos podido cambiar el estado del evento.', 'Cancelacion pendiente'),
     });
   }
 
@@ -127,13 +130,13 @@ export class AdminEventosComponent implements OnInit, OnDestroy {
     if (!this.deleteTarget) return;
     this.eventosService.deleteById(this.deleteTarget.idEvento).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.notification.success('Evento eliminado');
+        this.notification.success('El evento se ha retirado del catalogo.', 'Evento eliminado');
         this.deleteTarget = null;
         this.cdr.markForCheck();
         this.load();
       },
       error: () => {
-        this.notification.error('Error al eliminar');
+        this.notification.error('No hemos podido eliminar el evento.', 'Eliminacion pendiente');
         this.deleteTarget = null;
         this.cdr.markForCheck();
       },

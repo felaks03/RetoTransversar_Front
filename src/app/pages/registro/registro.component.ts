@@ -50,12 +50,12 @@ export class RegistroComponent {
     this.submitting = true;
     this.usuariosService.registro(payload).subscribe({
       next: () => {
-        this.notification.success('Cuenta creada. Ya puedes iniciar sesión.');
+        this.notification.success('Ya puedes iniciar sesion y empezar a reservar.', 'Cuenta creada');
         this.router.navigate(['/login']);
       },
       error: (err) => {
         this.submitting = false;
-        this.notification.error(this.getErrorMessage(err));
+        this.notification.error(this.getErrorMessage(err), 'No hemos podido crear la cuenta');
         this.cdr.markForCheck();
       },
     });
@@ -71,13 +71,13 @@ export class RegistroComponent {
     }
 
     if (err.status === 409) {
-      return 'El nombre de usuario ya está en uso.';
+      return 'Ese nombre de usuario ya esta en uso. Prueba con otro distinto.';
     }
 
     if (err.status === 400) {
-      return 'Revisa los datos del formulario antes de enviar.';
+      return 'Revisa los datos del formulario antes de volver a enviarlo.';
     }
 
-    return 'No se pudo completar el registro.';
+    return 'No hemos podido completar el registro ahora mismo.';
   }
 }

@@ -64,12 +64,15 @@ export class AdminTiposComponent implements OnInit, OnDestroy {
     const op$ = this.editing ? this.tiposService.update(data) : this.tiposService.create(data);
     op$.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.notification.success(this.editing ? 'Tipo actualizado' : 'Tipo creado');
+        this.notification.success(
+          this.editing ? 'Los cambios del tipo ya estan guardados.' : 'El nuevo tipo ya esta disponible.',
+          this.editing ? 'Tipo actualizado' : 'Tipo creado'
+        );
         this.showForm = false;
         this.cdr.markForCheck();
         this.load();
       },
-      error: () => this.notification.error('Error al guardar'),
+      error: () => this.notification.error('No hemos podido guardar los cambios del tipo.', 'Guardado pendiente'),
     });
   }
 
@@ -81,13 +84,13 @@ export class AdminTiposComponent implements OnInit, OnDestroy {
     if (!this.deleteTarget) return;
     this.tiposService.deleteById(this.deleteTarget.idTipo).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.notification.success('Tipo eliminado');
+        this.notification.success('El tipo se ha retirado correctamente.', 'Tipo eliminado');
         this.deleteTarget = null;
         this.cdr.markForCheck();
         this.load();
       },
       error: () => {
-        this.notification.error('Error al eliminar');
+        this.notification.error('No hemos podido eliminar el tipo.', 'Eliminacion pendiente');
         this.deleteTarget = null;
         this.cdr.markForCheck();
       },

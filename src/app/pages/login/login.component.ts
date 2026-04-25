@@ -34,7 +34,7 @@ export class LoginComponent {
 
     this.session.login(username, password).subscribe({
       next: (user) => {
-        this.notification.success(`Bienvenido, ${user.username}`);
+        this.notification.success(`Ya has entrado como ${user.username}.`, 'Sesion iniciada');
         if (user.rol === 'ROLE_ADMON') {
           this.router.navigate(['/admin/eventos']);
         } else {
@@ -43,11 +43,11 @@ export class LoginComponent {
       },
       error: (err) => {
         if (err.status === 401) {
-          this.notification.error('Usuario o contraseña incorrectos');
+          this.notification.error('Comprueba tu usuario y tu contrasena e intentalo de nuevo.', 'Credenciales no validas');
         } else if (err.status === 403) {
-          this.notification.error('Tu cuenta está desactivada');
+          this.notification.error('Tu acceso esta deshabilitado en este momento.', 'Cuenta inactiva');
         } else {
-          this.notification.error('No se pudo conectar con el servidor');
+          this.notification.error('No hemos podido contactar con el servidor.', 'Conexion no disponible');
         }
         this.submitting = false;
         this.cdr.markForCheck();
