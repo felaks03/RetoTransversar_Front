@@ -1,11 +1,12 @@
 .main-header {
-  background: #fff;
-  color: #333;
+  background: rgba(8, 8, 9, 0.94);
+  color: var(--text);
   padding: 0 1.5rem;
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
 }
 
 .nav-container {
@@ -19,8 +20,8 @@
 
 .nav-brand {
   font-size: 1.1rem;
-  font-weight: 600;
-  color: #111;
+  font-weight: 700;
+  color: var(--text);
   text-decoration: none;
 }
 
@@ -34,17 +35,17 @@
 }
 
 .nav-links a, .dropdown-toggle {
-  color: #555;
+  color: var(--text-muted);
   text-decoration: none;
   padding: 0.4rem 0.75rem;
-  border-radius: 4px;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 
 .nav-links a:hover, .dropdown-toggle:hover,
 .nav-links a.active {
-  background: #f5f5f5;
-  color: #111;
+  background: var(--surface-elevated);
+  color: var(--text);
 }
 
 .dropdown {
@@ -56,14 +57,15 @@
   position: absolute;
   top: 100%;
   left: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   list-style: none;
   padding: 0.25rem 0;
   margin: 0.25rem 0 0;
   min-width: 150px;
   z-index: 200;
+  box-shadow: var(--shadow-md);
 }
 
 .dropdown:hover .dropdown-menu {
@@ -71,7 +73,7 @@
 }
 
 .dropdown-menu a {
-  color: #555;
+  color: var(--text-muted);
   padding: 0.4rem 1rem;
   display: block;
   border-radius: 0;
@@ -79,8 +81,8 @@
 
 .dropdown-menu a:hover,
 .dropdown-menu a.active {
-  background: #f5f5f5;
-  color: #111;
+  background: var(--surface-strong);
+  color: var(--text);
 }
 
 .nav-auth {
@@ -92,39 +94,41 @@
 
 .nav-user {
   font-size: 0.875rem;
-  color: #555;
+  color: var(--text-muted);
 }
 
 .btn {
   padding: 0.35rem 0.9rem;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  background: #fff;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: transparent;
   cursor: pointer;
   font-size: 0.85rem;
   text-decoration: none;
-  color: #333;
+  color: var(--text);
 }
 
 .btn-login {
-  background: #222;
+  background: var(--primary);
   color: #fff;
-  border-color: #222;
+  border-color: var(--primary);
+  box-shadow: 0 12px 30px rgba(242, 13, 36, 0.18);
 }
 
 .btn-login:hover {
-  background: #444;
-  border-color: #444;
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-light);
 }
 
 .btn-logout {
-  background: #fff;
-  color: #555;
-  border-color: #ccc;
+  background: var(--surface-elevated);
+  color: var(--text-muted);
+  border-color: var(--border);
 }
 
 .btn-logout:hover {
-  background: #f5f5f5;
+  background: var(--surface-strong);
+  color: var(--text);
 }
 
 @media (max-width: 768px) {

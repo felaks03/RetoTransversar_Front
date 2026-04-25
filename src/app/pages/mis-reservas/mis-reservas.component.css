@@ -31,6 +31,8 @@
   padding: 1.25rem;
   background: var(--surface);
   border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
 }
 
 .reserva-info {
@@ -77,6 +79,7 @@
 .precio {
   font-weight: 700;
   font-size: 1.1rem;
+  color: var(--primary);
 }
 
 .btn-primary {

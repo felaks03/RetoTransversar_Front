@@ -7,6 +7,8 @@
   background: var(--surface);
   border-radius: var(--radius);
   margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
 }
 
 .filter-group {
@@ -28,19 +30,21 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   font-size: 0.95rem;
-  background: #fff;
+  background: var(--surface-muted);
+  color: var(--text);
 }
 
 .filter-group input:focus,
 .filter-group select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 0 3px rgba(242, 13, 36, 0.16);
 }
 
 .btn-secondary {
   padding: 0.5rem 1.25rem;
-  background: var(--surface);
+  background: var(--surface-muted);
+  color: var(--text);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
@@ -50,5 +54,5 @@
 }
 
 .btn-secondary:hover {
-  background: var(--border);
+  background: var(--surface-strong);
 }
